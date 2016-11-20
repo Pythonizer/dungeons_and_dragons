@@ -4,7 +4,7 @@ import pygame
 from pygame import locals
 
 from block_handler import BlockHandler
-
+from start_menu import GameMenu
 import sys
 from datetime import datetime
 
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     pygame.init()
     clock = pygame.time.Clock()
 
-    display = 800, 700
+    display = 700, 700
     fullscreen = False
     black = 0, 0, 0
     gray = 150, 150, 150
@@ -31,11 +31,17 @@ if __name__ == '__main__':
 
     screen = pygame.display.set_mode(display)
 
-    dd_map = pygame.image.load('map.jpg')
+    items = ['1. Load map', '2. Change block size', '3. Start']
+    gm = GameMenu(screen, items)
+    gm.run()
+
+    #dd_map = pygame.image.load('map.jpg')
+    dd_map = pygame.image.load('maps/%s' % gm.chosen_map)
     dd_map = pygame.transform.scale(dd_map, display)
 
     block_handler = BlockHandler(display)
-    block_group, all_blocks = block_handler.create_blocks()
+    #block_group, all_blocks = block_handler.create_blocks()
+    block_group, all_blocks = block_handler.create_blocks(size=gm.chosen_block_size)
     block_handler.set_default_block_positions()
 
     while True:
@@ -57,7 +63,7 @@ if __name__ == '__main__':
                     elif event.key == locals.K_h:
                         print HELP_CONTENT
                     elif event.key == locals.K_SPACE:
-                        pygame.image.save(screen, 'screenshot_%s.png' % str(datetime.now()))
+                        pygame.image.save(screen, 'screenshots/screenshot_%s.png' % str(datetime.now()))
                     elif event.key == locals.K_g:
                         if not gm_mode:
                             block_handler.remove_all_temporary()

@@ -10,12 +10,16 @@ class BlockHandler(object):
         self.block_group = pygame.sprite.Group()
         self.all_blocks = []
 
-    def create_blocks(self):
-        number_of_blocks = (self.x / 100) * (self.y / 100)
+        self.block_size = None
+
+    def create_blocks(self, size=100):
+        self.block_size = size
+
+        number_of_blocks = (self.x / self.block_size) * (self.y / self.block_size)
 
         self.all_blocks = []
         for b in range(0, number_of_blocks):
-            tmp = Block((0, 0, 0))
+            tmp = Block((0, 0, 0), self.block_size)
             self.block_group.add(tmp)
             self.all_blocks.append(tmp)
         return self.block_group, self.all_blocks
@@ -27,18 +31,18 @@ class BlockHandler(object):
         for b in self.block_group:
             b.set_position(x, y)
             b.active = True
-            x += 100
+            x += self.block_size
             if x == self.x:
                 x = 0
-                y += 100
+                y += self.block_size
 
     def toggle_block(self, mouse_position):
         click_x = mouse_position[0]
         click_y = mouse_position[1]
 
         for b in self.all_blocks:
-            if (b.rect.x + 100) > click_x >= b.rect.x:
-                if (b.rect.y + 100) > click_y >= b.rect.y:
+            if (b.rect.x + self.block_size) > click_x >= b.rect.x:
+                if (b.rect.y + self.block_size) > click_y >= b.rect.y:
                     if b.active:
                         self.block_group.remove(b)
                         b.active = False
